@@ -1,6 +1,8 @@
-import { MoveData } from './MoveData';
+import MoveData from './MoveData';
 
-export interface MoveSectionData {
+interface MoveSectionData {
   title: string;
   data: MoveData[];
 }
+
+export default MoveSectionData;
