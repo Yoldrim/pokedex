@@ -1,3 +1,4 @@
-import Pokemon from './Pokemon';
+import { MoveData } from './MoveData';
+import { MoveSectionData } from './MoveSectionData';
 
-export { Pokemon };
+export { MoveData, MoveSectionData };

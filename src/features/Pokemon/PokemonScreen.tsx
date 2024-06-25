@@ -6,9 +6,10 @@ import type { HomeNavigatorProps } from '../../navigation/HomeNavigator';
 import { Canvas, Image, useImage } from '@shopify/react-native-skia';
 import { cap } from '../../helpers/utils';
 import AboutMenu from './AboutMenu';
-import { PokemonClient, PokemonSpecies } from 'pokenode-ts';
+import { Move, MoveClient, NamedAPIResource, PokemonClient, PokemonMove, PokemonSpecies } from 'pokenode-ts';
 import StatsMenu from './StatsMenu';
 import MovesMenu from './MovesMenu';
+import { MoveSectionData } from '../../types';
 
 interface MenuItemProps {
   title: string;
@@ -29,12 +30,93 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
 
   const [selectedMenuItem, setSelectedMenuItem] = useState('Stats');
   const [speciesInfo, setSpeciesInfo] = useState<PokemonSpecies | undefined>(undefined);
+  const [movesInfo, setMovesInfo] = useState<MoveSectionData[]>([]);
+
+  const movesGroupedByVersionAndLearnMethod = useMemo(() => {
+    const movesGroupedByVersion: {
+      [version: string]: { move: PokemonMove['move']; move_learn_method: NamedAPIResource; level_learned_at: number }[];
+    } = {};
+    route.params.pokemon.moves.forEach((move) => {
+      move.version_group_details.forEach((version) => {
+        const obj = {
+          move: move.move,
+          move_learn_method: version.move_learn_method,
+          level_learned_at: version.level_learned_at,
+        };
+        if (movesGroupedByVersion[version.version_group.name]) {
+          movesGroupedByVersion[version.version_group.name].push(obj);
+        } else {
+          movesGroupedByVersion[version.version_group.name] = [obj];
+        }
+      });
+    });
+
+    const resMoves: {
+      [version: string]: {
+        [method: string]: {
+          move: PokemonMove['move'];
+          move_learn_method: NamedAPIResource;
+          level_learned_at: number;
+        }[];
+      };
+    } = {};
+
+    Object.keys(movesGroupedByVersion).map((version) => {
+      const temp: {
+        [method: string]: {
+          move: PokemonMove['move'];
+          move_learn_method: NamedAPIResource;
+          level_learned_at: number;
+        }[];
+      } = {};
+
+      movesGroupedByVersion[version].map((move) => {
+        if (temp[move.move_learn_method.name]) {
+          // filter out duplicates
+          if (temp[move.move_learn_method.name].findIndex((d) => d.move.name === move.move.name) < 0) {
+            temp[move.move_learn_method.name].push(move);
+          }
+        } else {
+          temp[move.move_learn_method.name] = [move];
+        }
+      });
+      resMoves[version] = temp;
+    });
+    return resMoves;
+  }, [route.params.pokemon.moves]);
+
+  const moveSetShort = useMemo(() => {
+    const movesByMethod = movesGroupedByVersionAndLearnMethod[Object.keys(movesGroupedByVersionAndLearnMethod)[0]];
+    return Object.keys(movesByMethod)
+      .map((key) => ({ title: key, data: movesByMethod[key] }))
+      .sort((a, b) => (a.title > b.title ? 1 : -1));
+  }, [movesGroupedByVersionAndLearnMethod]);
 
   useEffect(() => {
     (async () => {
       const api = new PokemonClient();
-      const res = await api.getPokemonSpeciesByName(route.params.pokemon.name);
-      setSpeciesInfo(res);
+      const moveApi = new MoveClient();
+      const speciesRes = await api.getPokemonSpeciesByName(route.params.pokemon.name);
+      setSpeciesInfo(speciesRes);
+
+      const movesRes = await Promise.all(
+        moveSetShort.map(async (moveMethodGroup) => {
+          const newMoveData = await Promise.all(
+            moveMethodGroup.data.map(async (move) => {
+              const moveData = await moveApi.getMoveByName(move.move.name);
+              return {
+                move: moveData,
+                move_learn_method: move.move_learn_method,
+                level_learned_at: move.level_learned_at,
+              };
+            }),
+          );
+
+          return { title: moveMethodGroup.title, data: newMoveData };
+        }),
+      );
+
+      setMovesInfo(movesRes);
     })();
   }, []);
 
@@ -54,7 +136,7 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
       {
         title: 'Moves',
         onPress: () => setSelectedMenuItem('Moves'),
-        component: <MovesMenu moves={route.params.pokemon.moves} />,
+        component: <MovesMenu moves={movesInfo} />,
       },
       {
         title: 'Evolutions',
@@ -62,7 +144,7 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
         component: null,
       },
     ],
-    [route.params.pokemon, speciesInfo],
+    [route.params.pokemon, speciesInfo, movesInfo],
   );
 
   const typeColor = useMemo(
@@ -74,21 +156,21 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
       <LinearGradient
         colors={[typeColor, typeColor, colors.theme.background]}
         style={styles.background}
-        locations={[0, 0.35, 0.55]}
+        locations={[0, 0.3, 0.5]}
       />
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 4 }}>
         <Canvas style={{ flex: 1 }}>
           <Image
             image={pokemonImage}
             fit='fitHeight'
-            x={width * 0.1}
-            y={width * 0.15}
-            width={width * 0.8}
-            height={width * 0.8}
+            x={width * 0.15}
+            y={width * 0.2}
+            width={width * 0.7}
+            height={width * 0.7}
           />
         </Canvas>
       </View>
-      <View style={{ flex: 1, marginTop: 48 }}>
+      <View style={{ flex: 5, marginTop: 48 }}>
         <View style={styles.titleContainer}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Text style={styles.titleText}>{cap(route.params.pokemon.name)}</Text>

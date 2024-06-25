@@ -34,3 +34,30 @@ export const getColorFromPokemonType = (type: PokemonType) => {
 export const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export const tdd = (n: number) => `#${'0'.repeat(Math.abs(n.toString().length - 3))}${n}`;
 export const sanitizeString = (s: string) => s.split('\n').join(' ').split('\f').join(' ');
+export const sanitizePokemonString = (s: string) => {
+  const allowedCapsChars = 2;
+  let capsCounter = 0;
+  s = sanitizeString(s);
+  let sSplit = s.split(' ').map((word) => {
+    for (let c of word.split('')) {
+      if (c === c.toUpperCase()) {
+        capsCounter++;
+      }
+
+      if (capsCounter > allowedCapsChars) {
+        capsCounter = 0;
+        return cap(word.toLowerCase());
+      }
+    }
+    capsCounter = 0;
+    return word;
+  });
+
+  return sSplit.join(' ');
+};
+export const getPrintableMoveString = (s: string) => {
+  return s
+    .split('-')
+    .map((x) => cap(x))
+    .join(' ');
+};
