@@ -5,14 +5,17 @@ import PokemonCard from './PokemonCard';
 import { PokemonClient, Pokemon } from 'pokenode-ts';
 import { PokemonShort } from '../../types';
 import { buildStorage } from 'axios-cache-interceptor';
+import PokemonList from '../../components/PokemonList';
 
 const PAGINATION_LIMIT = 40;
 
 const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, route }) => {
   const [pokemons, setPokemons] = useState<PokemonShort[]>([]);
   const [offset, setOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
+    setIsLoading(true);
     const api = new PokemonClient();
     const pokemonsApiResource = (await api.listPokemons(offset, PAGINATION_LIMIT)).results;
 
@@ -33,6 +36,7 @@ const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, 
 
     setPokemons([...pokemons, ...pokemonResults]);
     setOffset(offset + PAGINATION_LIMIT);
+    setIsLoading(false);
   }, [offset, pokemons]);
 
   useEffect(() => {
@@ -40,27 +44,19 @@ const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, 
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <FlatList
-        style={{ paddingHorizontal: 12 }}
-        numColumns={2}
-        data={pokemons}
-        renderItem={({ item }) => (
-          <PokemonCard
-            pokemon={item}
-            onPress={() =>
-              navigation.push('PokemonScreen', {
-                pokemon: item,
-              })
-            }
-          />
-        )}
-        keyExtractor={(item) => `${item.id.toString()}_${item.name}`}
-        ListFooterComponent={() => <ActivityIndicator style={{ marginVertical: 16 }} />}
-        onEndReachedThreshold={0.7}
+    <View style={{ flex: 1 }}>
+      <PokemonList
+        pokemons={pokemons}
+        navigation={navigation}
         onEndReached={fetchData}
+        isLoading={isLoading}
+        onPokemonPressed={(pokemon) =>
+          navigation.push('PokemonScreen', {
+            pokemon,
+          })
+        }
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
