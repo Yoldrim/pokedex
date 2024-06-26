@@ -1,5 +1,5 @@
 import colors from './colors';
-import { PokemonType } from 'pokenode-ts';
+import { NamedAPIResource, PokemonType } from 'pokenode-ts';
 import { ImageSourcePropType } from 'react-native';
 
 const icons: { [key: string]: ImageSourcePropType } = {
@@ -31,6 +31,10 @@ export const getColorFromPokemonType = (type: PokemonType) => {
   return colors.pokemonTypeColors[type.type.name] || '#fff';
 };
 
+export const getIdFromNamedAPIResource = (res: NamedAPIResource) => {
+  const splitUrl = res.url.split('/');
+  return +splitUrl[splitUrl.length - 2];
+};
 export const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export const tdd = (n: number) => `#${'0'.repeat(Math.abs(n.toString().length - 3))}${n}`;
 export const sanitizeString = (s: string) => s.split('\n').join(' ').split('\f').join(' ');

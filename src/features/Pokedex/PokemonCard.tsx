@@ -1,12 +1,11 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { cap, getColorFromPokemonType, tdd } from '../../helpers/utils';
-import { Pokemon } from 'pokenode-ts';
-import colors from '../../helpers/colors';
 import PokemonTypePill from '../../components/PokemonTypePill';
+import { PokemonShort } from '../../types';
 
 interface Props {
-  pokemon: Pokemon;
+  pokemon: PokemonShort;
   onPress: () => void;
 }
 
@@ -38,7 +37,7 @@ const PokemonCard: React.FC<Props> = ({ pokemon, onPress }) => {
           <PokemonTypePill type={pokemon.types[0]} />
           {pokemon.types.length > 1 && <PokemonTypePill style={{ marginTop: 4 }} type={pokemon.types[1]} />}
         </View>
-        <Image source={{ uri: pokemon.sprites.front_default }} style={{ height: 72, width: 72 }} />
+        <Image source={{ uri: pokemon.imageUrl }} style={{ height: 72, width: 72 }} />
       </View>
     </TouchableOpacity>
   );

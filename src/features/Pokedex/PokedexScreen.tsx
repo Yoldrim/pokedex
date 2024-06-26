@@ -3,23 +3,33 @@ import { ActivityIndicator, FlatList, SafeAreaView, TouchableOpacity, View } fro
 import { HomeNavigatorProps } from '../../navigation/HomeNavigator';
 import PokemonCard from './PokemonCard';
 import { PokemonClient, Pokemon } from 'pokenode-ts';
+import { PokemonShort } from '../../types';
+import { buildStorage } from 'axios-cache-interceptor';
 
 const PAGINATION_LIMIT = 40;
 
 const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, route }) => {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [pokemons, setPokemons] = useState<PokemonShort[]>([]);
   const [offset, setOffset] = useState(0);
 
   const fetchData = useCallback(async () => {
     const api = new PokemonClient();
-    const pokemonsShort = (await api.listPokemons(offset, PAGINATION_LIMIT)).results;
+    const pokemonsApiResource = (await api.listPokemons(offset, PAGINATION_LIMIT)).results;
 
     const pokemonPromises: Promise<Pokemon>[] = [];
-    pokemonsShort.forEach((p) => {
+    pokemonsApiResource.forEach((p) => {
       pokemonPromises.push(api.getPokemonByName(p.name));
     });
 
-    const pokemonResults = await Promise.all(pokemonPromises);
+    const pokemonResults = (await Promise.all(pokemonPromises)).map(
+      (pokemon) =>
+        ({
+          id: pokemon.id,
+          name: pokemon.name,
+          imageUrl: pokemon.sprites.front_default,
+          types: pokemon.types,
+        }) as PokemonShort,
+    );
 
     setPokemons([...pokemons, ...pokemonResults]);
     setOffset(offset + PAGINATION_LIMIT);

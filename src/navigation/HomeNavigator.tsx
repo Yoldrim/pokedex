@@ -2,14 +2,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PokemonScreen from '../features/Pokemon/PokemonScreen';
 import PokedexScreen from '../features/Pokedex/PokedexScreen';
 import type { NativeStackScreenProps } from 'react-native-screens/native-stack';
-import { Pokemon } from 'pokenode-ts';
 import { tdd } from '../helpers/utils';
 import React from 'react';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { PokemonShort } from '../types';
 
 type HomeNavigatorParamList = {
   StackHome: undefined;
-  PokemonScreen: { pokemon: Pokemon };
+  PokemonScreen: { pokemon: PokemonShort };
 };
 
 export type HomeNavigatorProps = {
