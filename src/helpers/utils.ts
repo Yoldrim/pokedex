@@ -1,6 +1,7 @@
 import colors from './colors';
 import { NamedAPIResource, PokemonType } from 'pokenode-ts';
 import { ImageSourcePropType } from 'react-native';
+import { PokemonShort } from '../types';
 
 const icons: { [key: string]: ImageSourcePropType } = {
   bug: require('../../assets/pokemonTypes/bug.png'),
@@ -29,6 +30,10 @@ export const getTypeIconFromName = (name: string) => {
 
 export const getColorFromPokemonType = (type: PokemonType) => {
   return colors.pokemonTypeColors[type.type.name] || '#fff';
+};
+
+export const getRandomPokemon = (pokemons: PokemonShort[]) => {
+  return pokemons[Math.floor(Math.random() * pokemons.length - 1)];
 };
 
 export const getIdFromNamedAPIResource = (res: NamedAPIResource) => {

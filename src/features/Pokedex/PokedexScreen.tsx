@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { HomeNavigatorProps } from '../../navigation/HomeNavigator';
-import PokemonCard from './PokemonCard';
 import { PokemonClient, Pokemon } from 'pokenode-ts';
 import { PokemonShort } from '../../types';
-import { buildStorage } from 'axios-cache-interceptor';
 import PokemonList from '../../components/PokemonList';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../reducers/rootReducer';
 import { addPokemonsToIndex, sortPokemonIndex } from '../../reducers/indexedPokemonsSlice';
 import Fuse from 'fuse.js';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { getRandomPokemon } from '../../helpers/utils';
 
 const PAGINATION_LIMIT = 40;
 
@@ -30,7 +30,7 @@ const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, 
   const loadMoreData = useCallback(async () => {
     if (offset < pokemonIndexState.currentCount) {
       setIsLoading(true);
-      setOffset(offset + 40);
+      setOffset(offset + PAGINATION_LIMIT);
     }
 
     setIsLoading(false);
@@ -87,6 +87,15 @@ const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, 
     [pokemons],
   );
 
+  const onPokemonPressed = useCallback(
+    (pokemon: PokemonShort) => {
+      navigation.push('PokemonScreen', {
+        pokemon,
+      });
+    },
+    [navigation],
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
@@ -98,12 +107,19 @@ const PokedexScreen: React.FC<HomeNavigatorProps['StackHome']> = ({ navigation, 
         navigation={navigation}
         onEndReached={loadMoreData}
         isLoading={isLoading}
-        onPokemonPressed={(pokemon) =>
-          navigation.push('PokemonScreen', {
-            pokemon,
-          })
-        }
+        onPokemonPressed={(pokemon) => onPokemonPressed(pokemon)}
       />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.randomButtonContainer}
+        onPress={() => {
+          const filteredPokemons = pokemonIndexState.pokemons.filter((item) => item.id < 9999);
+          onPokemonPressed(getRandomPokemon(filteredPokemons));
+        }}
+      >
+        <Icon name={'dice-outline'} size={24} color={'#333'} />
+        <Text style={styles.randomTextStyle}>Random Pokémon!</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -128,16 +144,32 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
 
     fontSize: 18,
+  },
+  randomButtonContainer: {
+    position: 'absolute',
+    bottom: 24,
+    right: 8,
+    backgroundColor: '#F7CE46',
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    alignItems: 'center',
 
-    // shadowColor: '#333',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.22,
-    // shadowRadius: 2.22,
-    //
-    // elevation: 3,
+    shadowColor: '#333',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
+  },
+  randomTextStyle: {
+    fontFamily: 'Roboto-Medium',
+    marginLeft: 4,
+    color: '#333',
   },
 });
 

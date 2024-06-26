@@ -18,11 +18,6 @@ const AboutMenu: React.FC<Props> = ({ pokemon, speciesInfo }) => {
     return null;
   }
 
-  // TODO TOMORROW
-  // Språket på species, leta efter engelska
-  // Fixa texterna. Plocka ner all caps ord osv.
-  // loading indikator på pokemonscreen sidan
-
   return (
     <ScrollView>
       <View style={styles.infoContainer}>
