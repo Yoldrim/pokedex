@@ -6,6 +6,8 @@ import { tdd } from '../helpers/utils';
 import React from 'react';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { PokemonShort } from '../types';
+import { View, Text } from 'react-native';
+import FavoriteButton from '../components/FavoriteButton';
 
 type HomeNavigatorParamList = {
   StackHome: undefined;
@@ -40,6 +42,8 @@ const HomeNavigator = ({ navigation, route }) => {
           headerTransparent: true,
           headerBackTitle: ' ',
           headerTintColor: '#fff',
+          headerRight: () => <FavoriteButton pokemon={route.params.pokemon} />,
+          headerLeftContainerStyle: { paddingLeft: 8 },
         })}
       />
     </Stack.Navigator>

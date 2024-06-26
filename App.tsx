@@ -4,6 +4,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './src/navigation/RootNavigator';
 import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
+import { persistor, store } from './src/reducers/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -16,9 +19,13 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
 
