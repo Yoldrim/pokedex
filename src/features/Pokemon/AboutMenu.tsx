@@ -1,13 +1,7 @@
 import React, { useMemo } from 'react';
 import { Pokemon, PokemonSpecies } from 'pokenode-ts';
 import { ScrollView, View, StyleSheet, Text, Image } from 'react-native';
-import PokemonTypePill from '../../components/PokemonTypePill';
-import { cap, getTypeIconFromName, sanitizeString } from '../../helpers/utils';
-
-const sanitizeAboutString = (s: string) => {
-  s = sanitizeString(s);
-  return s;
-};
+import { cap, getTypeIconFromName, sanitizePokemonString, sanitizeString } from '../../helpers/utils';
 
 interface Props {
   pokemon: Pokemon;
@@ -17,7 +11,7 @@ interface Props {
 const AboutMenu: React.FC<Props> = ({ pokemon, speciesInfo }) => {
   const descriptionText = useMemo(() => {
     const text = speciesInfo?.flavor_text_entries?.find((text) => text.language.name === 'en')?.flavor_text;
-    return text ? sanitizeAboutString(text) : '';
+    return text ? sanitizePokemonString(text) : '';
   }, [pokemon]);
 
   if (speciesInfo === undefined) {

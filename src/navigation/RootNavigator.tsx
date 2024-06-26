@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeNavigator from './HomeNavigator';
 import FavoritesNavigator from './FavoritesNavigator';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
+import FoundationIcon from 'react-native-vector-icons/Foundation';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +13,9 @@ const RootNavigator = () => {
         name={'Home'}
         component={HomeNavigator}
         options={{
-          tabBarIcon: ({ focused, size }) => <EntypoIcon name={'home'} size={20} color={focused ? '#333' : '#999'} />,
+          tabBarIcon: ({ focused, size }) => (
+            <FoundationIcon name={'home'} size={24} color={focused ? '#333' : '#999'} />
+          ),
           tabBarLabelStyle: { fontFamily: 'Roboto-Regular', fontSize: 10 },
           tabBarActiveTintColor: '#333',
           tabBarInactiveTintColor: '#999',
@@ -23,7 +25,9 @@ const RootNavigator = () => {
         name={'Favorites'}
         component={FavoritesNavigator}
         options={{
-          tabBarIcon: ({ focused, size }) => <AntIcon name={'heart'} size={20} color={focused ? '#333' : '#999'} />,
+          tabBarIcon: ({ focused, size }) => (
+            <AntIcon name={focused ? 'heart' : 'hearto'} size={20} color={focused ? '#333' : '#999'} />
+          ),
           tabBarLabelStyle: { fontFamily: 'Roboto-Regular' },
           tabBarActiveTintColor: '#333',
           tabBarInactiveTintColor: '#999',

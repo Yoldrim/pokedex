@@ -36,7 +36,8 @@ export const getIdFromNamedAPIResource = (res: NamedAPIResource) => {
   return +splitUrl[splitUrl.length - 2];
 };
 export const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-export const tdd = (n: number) => `#${'0'.repeat(Math.abs(n.toString().length - 3))}${n}`;
+export const tdd = (n: number) =>
+  `#${n.toString().length < 3 ? '0'.repeat(Math.abs(n.toString().length - 3)) : ''}${n}`;
 export const sanitizeString = (s: string) => s.split('\n').join(' ').split('\f').join(' ');
 export const sanitizePokemonString = (s: string) => {
   const allowedCapsChars = 2;

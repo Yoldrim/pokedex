@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 12,
-    margin: 4,
+    margin: 6,
     borderRadius: 12,
     overflow: 'hidden',
     shadowColor: '#333',
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   typesContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    alignItems: 'baseline',
   },
   nameText: {
     fontSize: 14,

@@ -109,7 +109,7 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
   const [loading, setLoading] = useState(true);
 
   const [pokemon, setPokemon] = useState<Pokemon>();
-  const [selectedMenuItem, setSelectedMenuItem] = useState('Stats');
+  const [selectedMenuItem, setSelectedMenuItem] = useState('About');
   const [speciesInfo, setSpeciesInfo] = useState<PokemonSpecies | undefined>(undefined);
   const [movesInfo, setMovesInfo] = useState<MoveSectionData[]>([]);
   const [evolutionChain, setEvolutionChain] = useState<EvolutionChain>({});
