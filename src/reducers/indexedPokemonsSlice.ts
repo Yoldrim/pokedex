@@ -16,7 +16,7 @@ const initialState: PokemonIndexState = {
 };
 
 export const indexedPokemonsSlice = createSlice({
-  name: 'favorites',
+  name: 'pokemonIndex',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -28,7 +28,6 @@ export const indexedPokemonsSlice = createSlice({
       state.maxCount = action.payload.maxCount;
     },
     addPokemonsToIndex: (state, action: PayloadAction<{ pokemons: PokemonShort[]; maxCount: number }>) => {
-      console.log('here!');
       action.payload.pokemons.forEach((pokemon) => {
         if (state.pokemons.find((p) => p.id === pokemon.id) === undefined) {
           state.pokemons.push(pokemon);

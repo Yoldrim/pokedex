@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import { Provider } from 'react-redux';
 import { persistor, store } from './src/reducers/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -21,6 +22,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <NavigationContainer>
+          <StatusBar style='dark' />
           <RootNavigator />
         </NavigationContainer>
       </PersistGate>

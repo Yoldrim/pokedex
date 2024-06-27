@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { HomeNavigatorProps } from '../../navigation/HomeNavigator';
 import { PokemonClient, Pokemon } from 'pokenode-ts';
 import { PokemonShort } from '../../types';

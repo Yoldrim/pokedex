@@ -33,7 +33,7 @@ export const getColorFromPokemonType = (type: PokemonType) => {
 };
 
 export const getRandomPokemon = (pokemons: PokemonShort[]) => {
-  return pokemons[Math.floor(Math.random() * pokemons.length - 1)];
+  return pokemons[Math.floor(Math.random() * (pokemons.length - 1))];
 };
 
 export const getIdFromNamedAPIResource = (res: NamedAPIResource) => {
