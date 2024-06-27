@@ -12,7 +12,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hbergqvist.pokedex"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,14 +26,15 @@
     },
     "plugins": [
       [
-        "expo-font", {
+        "expo-font",
+        {
           "fonts": [
             "./assets/fonts/Roboto-Black.ttf",
             "./assets/fonts/Roboto-Bold.ttf",
             "./assets/fonts/Roboto-Medium.ttf",
             "./assets/fonts/Roboto-Regular.ttf",
             "./assets/fonts/Roboto-Light.ttf",
-            "./assets/fonts/Roboto-Thin.ttf",
+            "./assets/fonts/Roboto-Thin.ttf"
           ]
         }
       ]
