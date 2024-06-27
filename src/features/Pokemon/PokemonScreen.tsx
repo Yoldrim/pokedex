@@ -197,7 +197,7 @@ const PokemonScreen: React.FC<HomeNavigatorProps['PokemonScreen']> = ({ navigati
       {
         title: 'Evolutions',
         onPress: () => setSelectedMenuItem('Evolutions'),
-        component: pokemon ? <EvolutionsMenu evolutionChain={evolutionChain} /> : null,
+        component: pokemon ? <EvolutionsMenu evolutionChain={evolutionChain} navigation={navigation} /> : null,
       },
     ];
   }, [pokemon, speciesInfo, movesInfo]);

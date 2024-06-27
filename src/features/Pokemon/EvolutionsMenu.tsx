@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { EvolutionChain } from '../../types';
 import { cap, tdd } from '../../helpers/utils';
 import PokemonTypePill from '../../components/PokemonTypePill';
 
 interface Props {
   evolutionChain: EvolutionChain;
+  navigation: any;
 }
 
-const EvolutionsMenu: React.FC<Props> = ({ evolutionChain }) => {
+const EvolutionsMenu: React.FC<Props> = ({ evolutionChain, navigation }) => {
   const chainArray = useMemo(
     () =>
       Object.keys(evolutionChain)
@@ -25,9 +26,22 @@ const EvolutionsMenu: React.FC<Props> = ({ evolutionChain }) => {
         <View key={item.order} style={index === chainArray.length - 1 ? { marginBottom: 24 } : null}>
           <View style={styles.pokemonRow}>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-              <View style={styles.imageContainer}>
+              <TouchableOpacity
+                style={styles.imageContainer}
+                activeOpacity={0.7}
+                onPress={() => {
+                  navigation.push('PokemonScreen', {
+                    pokemon: {
+                      id: item.chain.id,
+                      name: item.chain.name,
+                      imageUrl: item.chain.imageUrl,
+                      types: item.chain.types,
+                    },
+                  });
+                }}
+              >
                 <Image source={{ uri: item.chain.imageUrl }} height={96} width={96} style={{ resizeMode: 'contain' }} />
-              </View>
+              </TouchableOpacity>
               {index < chainArray.length - 1 && (
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                   <View
