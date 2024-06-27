@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../reducers/rootReducer';
 import { cap, getRandomPokemon } from '../../helpers/utils';
 import PokemonShort from '../../types/PokemonShort';
 import { Canvas, ColorMatrix, Image, useImage } from '@shopify/react-native-skia';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { setHighScore } from '../../reducers/highscoreSlice';
 
 interface Props {
   navigation: any;
@@ -16,12 +17,16 @@ const normalMatrix = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0
 
 const GameScreen: React.FC<Props> = () => {
   const { height, width, scale, fontScale } = useWindowDimensions();
+  const dispatch = useDispatch();
 
   const pokemons = useSelector((state: RootState) => state.pokemonIndex.pokemons).filter(
     (pokemon) => pokemon.id < 9999,
   );
+  const highScore = useSelector((state: RootState) => state.highScore.highScore);
   const [gameWon, setGameWon] = useState(false);
+  const [isNewHighScore, setIsNewHighScore] = useState(false);
   const [gameActive, setGameActive] = useState(true);
+  const [score, setScore] = useState(0);
   const [activePokemon, setActivePokemon] = useState<PokemonShort>();
   const [guessPokemonsNames, setGuessPokemonsNames] = useState<string[]>([]);
 
@@ -41,8 +46,25 @@ const GameScreen: React.FC<Props> = () => {
   };
 
   const guess = (name: string) => {
-    setGameWon(name === activePokemon?.name);
+    const gameWon = name === activePokemon?.name;
+    if (gameWon) {
+      setScore(score + 1);
+      setGameWon(true);
+    } else {
+      if (score > highScore) {
+        dispatch(setHighScore(score));
+        setIsNewHighScore(true);
+      } else {
+        setIsNewHighScore(false);
+      }
+      setScore(0);
+      setGameWon(false);
+    }
     setGameActive(false);
+  };
+
+  const onPlayAgainPressed = () => {
+    newGameRound();
   };
 
   useEffect(() => {
@@ -56,13 +78,14 @@ const GameScreen: React.FC<Props> = () => {
           <Text style={styles.gameTitle}>
             {gameActive ? "Who's that Pokémon?" : `It's ${cap(activePokemon?.name || '')}!`}
           </Text>
+          <Text>Score: {score}</Text>
         </View>
         <Canvas style={{ flex: 1 }}>
           <Image
             image={image}
             fit='fitHeight'
             x={width * 0.15}
-            y={width * 0.05}
+            y={width * 0.04}
             width={width * 0.7}
             height={width * 0.7}
           >
@@ -87,7 +110,14 @@ const GameScreen: React.FC<Props> = () => {
             <Text style={[styles.gameOverText, { color: gameWon ? '#00C851' : '#FF4444' }]}>
               {gameWon ? 'You win!' : 'You lose..'}
             </Text>
-            <TouchableOpacity style={styles.guessCard} onPress={() => newGameRound()}>
+            {!gameWon && (
+              <View style={styles.highScoreContainer}>
+                <Text style={styles.highScoreText}>
+                  {isNewHighScore ? 'New High Score!\n' : ''} High Score: {highScore}
+                </Text>
+              </View>
+            )}
+            <TouchableOpacity style={styles.guessCard} onPress={onPlayAgainPressed}>
               <Text style={styles.guessCardText}>Play again</Text>
             </TouchableOpacity>
           </View>
@@ -139,6 +169,20 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 24,
     marginTop: 24,
+    marginBottom: 4,
+  },
+  scoreText: {},
+  highScoreContainer: {
+    marginBottom: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  highScoreText: {
+    fontFamily: 'Roboto-Medium',
+    color: '#333',
+    fontSize: 18,
+    lineHeight: 24,
+    textAlign: 'center',
   },
 });
 
