@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite } from '../reducers/favoritesSlice';
 import { RootState } from '../reducers/rootReducer';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
   pokemon: PokemonShort;
@@ -22,7 +22,7 @@ const FavoriteButton: React.FC<Props> = ({ pokemon }) => {
       style={styles.container}
       onPress={() => (!isFavorite ? dispatch(addFavorite(pokemon)) : dispatch(removeFavorite(pokemon)))}
     >
-      <Icon name={isFavorite ? 'heart' : 'hearto'} size={28} color={isFavorite ? '#e00' : '#fff'} />
+      <Icon name={isFavorite ? 'heart' : 'heart-o'} size={28} color={isFavorite ? '#e00' : '#fff'} />
     </TouchableOpacity>
   );
 };

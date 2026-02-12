@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeNavigator from './HomeNavigator';
 import FavoritesNavigator from './FavoritesNavigator';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
-import AntIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import GameScreen from '../features/Game/GameScreen';
 
@@ -40,7 +40,7 @@ const RootNavigator = () => {
         component={FavoritesNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <AntIcon name={focused ? 'heart' : 'hearto'} size={20} color={focused ? '#333' : '#999'} />
+            <FontAwesomeIcon name={focused ? 'heart' : 'heart-o'} size={20} color={focused ? '#333' : '#999'} />
           ),
           tabBarLabelStyle: { fontFamily: 'Roboto-Regular' },
           tabBarActiveTintColor: '#333',

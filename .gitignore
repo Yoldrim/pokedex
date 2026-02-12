@@ -35,3 +35,6 @@ todo.txt
 
 # typescript
 *.tsbuildinfo
+
+# yarn
+.yarn
